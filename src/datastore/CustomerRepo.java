@@ -5,6 +5,8 @@ import entity.Current_Account;
 import entity.Customer;
 import entity.Savings_Account;
 import services.BankService;
+
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,6 +52,7 @@ public class CustomerRepo {
         john.getAccount().add(johnCurrentAccount);
         customers.put(john.getBvn(), john);
         Account johnSavingsAccount = new Savings_Account(1000011003);
+        johnSavingsAccount.setBalance(BigDecimal.valueOf(450000));
         john.getAccount().add(johnSavingsAccount);
         customers.put(john.getBvn(), john);
     }

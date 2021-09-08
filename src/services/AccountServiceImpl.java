@@ -6,6 +6,7 @@ import entity.Account;
 import entity.Current_Account;
 import entity.Customer;
 import entity.Savings_Account;
+import exception.BankTransactionException;
 import exception.BankingException;
 
 import java.math.BigDecimal;
@@ -64,12 +65,44 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public BigDecimal deposit(BigDecimal amount, long accountNumber) {
-        return null;
+    public BigDecimal deposit(BigDecimal amount, long accountNumber) throws BankTransactionException {
+            Account account = findAccount(accountNumber);
+            validateTransaction(amount,account);
+
+            BigDecimal newBalance = account.getBalance().add(amount);
+            account.setBalance(newBalance);
+
+        return newBalance;
     }
 
     @Override
-    public long findAccount(long accountNumber) {
-        return 0;
+    public Account findAccount(long accountNumber) {
+
+        Account foundAccount = null;
+        boolean accountFound = false;
+
+        for(Customer customer : CustomerRepo.getCustomers().values()){
+
+            for(Account anAccount : customer.getAccount()){
+                if(anAccount.getAccountNumber() == accountNumber){
+                    foundAccount = anAccount;
+                    accountFound = true;
+                    break;
+                }
+            }
+            if(accountFound){
+                break;
+            }
+        }
+        return foundAccount;
+    }
+
+    private void validateTransaction(BigDecimal amount, Account account) throws BankTransactionException {
+        if(amount.compareTo(BigDecimal.ZERO) < 0){
+            throw new BankTransactionException("Transaction amount cannot be negative");
+        }
+        if(account == null){
+            throw new BankTransactionException("Transaction account not found");
+        }
     }
 }

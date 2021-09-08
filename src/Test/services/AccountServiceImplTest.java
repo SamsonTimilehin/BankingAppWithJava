@@ -2,6 +2,7 @@ package Test.services;
 
 import datastore.AccountType;
 import datastore.CustomerRepo;
+import entity.Account;
 import entity.Customer;
 import exception.BankingException;
 import org.junit.jupiter.api.AfterEach;
@@ -11,6 +12,7 @@ import services.AccountService;
 import services.AccountServiceImpl;
 import services.BankService;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static datastore.AccountType.CURRENT_ACCOUNT;
@@ -154,6 +156,15 @@ class AccountServiceImplTest {
 
     @Test
     void deposit(){
-
+        try {
+            Account johnSavingsAccount = accountService.findAccount(1000011003);
+            assertEquals(BigDecimal.valueOf(450000), johnSavingsAccount.getBalance());
+            BigDecimal accountBalance = accountService.deposit(BigDecimal.valueOf(50000), 1000011003);
+            assertEquals(BigDecimal.valueOf(500000), johnSavingsAccount.getBalance());
+            johnSavingsAccount = accountService.findAccount(1000011003);
+            assertEquals(accountBalance, johnSavingsAccount.getBalance());
+        }catch (BankingException cause){
+            cause.printStackTrace();
+        }
     }
 }
