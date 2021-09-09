@@ -4,6 +4,7 @@ import datastore.AccountType;
 import datastore.CustomerRepo;
 import entity.Account;
 import entity.Customer;
+import exception.BankTransactionException;
 import exception.BankingException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -166,5 +167,41 @@ class AccountServiceImplTest {
         }catch (BankingException cause){
             cause.printStackTrace();
         }
+    }
+
+    @Test
+    void depositNegativeAmount(){
+
+        assertThrows(BankTransactionException.class,
+                ()->accountService.deposit(BigDecimal.valueOf(-5000),1000011003));
+    }
+
+    @Test
+    void depositToInvalidAccountNumber(){
+        assertThrows(BankTransactionException.class,
+                ()->accountService.deposit(BigDecimal.valueOf(8000), 100045200));
+    }
+
+    @Test
+    void depositWithVeryLargeAmount(){
+        try{
+            Account johnSavingsAccount = accountService.findAccount(1000011003);
+            BigDecimal originalBalance = johnSavingsAccount.getBalance();
+            assertEquals(BigDecimal.valueOf(450000),originalBalance);
+
+            BigDecimal depositAmount = new BigDecimal("10000000000000000000000");
+            accountService.deposit(depositAmount, 1000011003);
+            johnSavingsAccount = accountService.findAccount(1000011003);
+            BigDecimal newBalance = originalBalance.add(depositAmount);
+            assertEquals(newBalance, johnSavingsAccount.getBalance());
+        }catch (BankTransactionException cause){
+            cause.printStackTrace();
+        }
+    }
+    @Test
+    void findCurrentAccount(){
+        Account johnCurrentAccount = accountService.findAccount(1000011002);
+        assertNotNull(johnCurrentAccount);
+        assertEquals(1000011002, johnCurrentAccount.getAccountNumber());
     }
 }
