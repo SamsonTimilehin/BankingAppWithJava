@@ -3,6 +3,7 @@ package exception;
 public class BankingException extends Exception {
 
     public BankingException() {
+        super();
     }
 
     public BankingException(String message) {

@@ -1,6 +1,7 @@
 package services;
 
 import datastore.AccountType;
+import datastore.BankTransactionType;
 import datastore.CustomerRepo;
 import entity.Account;
 import entity.Current_Account;
@@ -8,8 +9,11 @@ import entity.Customer;
 import entity.Savings_Account;
 import exception.BankTransactionException;
 import exception.BankingException;
+import exception.InsufficientFundException;
 
 import java.math.BigDecimal;
+
+import static datastore.BankTransactionType.WITHDRAWAL;
 
 public class AccountServiceImpl implements AccountService{
     @Override
@@ -89,12 +93,24 @@ public class AccountServiceImpl implements AccountService{
                     accountFound = true;
                     break;
                 }
+
             }
             if(accountFound){
                 break;
             }
         }
         return foundAccount;
+    }
+
+    @Override
+    public BigDecimal withdraw(BigDecimal amount, long accountNumber) throws BankTransactionException, InsufficientFundException {
+        Account account = findAccount(accountNumber);
+        validateTransaction(amount,account);
+        checkForSufficientBalance(amount,account);
+        BigDecimal newBalance = debitAccount(amount, accountNumber);
+        account.setBalance(newBalance);
+
+        return newBalance;
     }
 
     private void validateTransaction(BigDecimal amount, Account account) throws BankTransactionException {
@@ -104,5 +120,20 @@ public class AccountServiceImpl implements AccountService{
         if(account == null){
             throw new BankTransactionException("Transaction account not found");
         }
+    }
+
+    public BigDecimal debitAccount(BigDecimal amount, long accountNumber){
+
+        Account theAccount = findAccount(accountNumber);
+       BigDecimal newBalance =  theAccount.getBalance().subtract(amount);
+       theAccount.setBalance(newBalance);
+       return newBalance;
+    }
+
+    public void checkForSufficientBalance(BigDecimal amount, Account theAccount) throws InsufficientFundException {
+            if(amount.compareTo(theAccount.getBalance()) > BigDecimal.ZERO.intValue()){
+                throw new InsufficientFundException("Insufficient fund found in your account");
+            }
+
     }
 }

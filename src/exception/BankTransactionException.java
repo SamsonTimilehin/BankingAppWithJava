@@ -2,6 +2,7 @@ package exception;
 
 public class BankTransactionException extends BankingException {
     public BankTransactionException() {
+        super();
     }
 
     public BankTransactionException(String message) {

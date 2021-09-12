@@ -6,6 +6,7 @@ import entity.Account;
 import entity.Customer;
 import exception.BankTransactionException;
 import exception.BankingException;
+import exception.InsufficientFundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -198,10 +199,66 @@ class AccountServiceImplTest {
             cause.printStackTrace();
         }
     }
+
     @Test
     void findCurrentAccount(){
-        Account johnCurrentAccount = accountService.findAccount(1000011002);
-        assertNotNull(johnCurrentAccount);
-        assertEquals(1000011002, johnCurrentAccount.getAccountNumber());
+       // try {
+            Account johnCurrentAccount = accountService.findAccount(1000011002);
+            assertNotNull(johnCurrentAccount);
+            assertEquals(1000011002, johnCurrentAccount.getAccountNumber());
+//        }catch (BankingException cause){
+//            cause.printStackTrace();
+//        }
     }
+
+    @Test
+    void findAccountWithInvalidAccountNumber(){
+   // try {
+        Account johnCurrentAccount = accountService.findAccount(20001230);
+        assertNull(johnCurrentAccount);
+//    }catch(BankingException cause){
+//        cause.printStackTrace();
+//    }
+    }
+
+   @Test
+    void withdraw(){
+        try{
+            Account johnSavingsAccount = accountService.findAccount(1000011003);
+            assertEquals(BigDecimal.valueOf(450000), johnSavingsAccount.getBalance());
+
+            BigDecimal newAccountBalance = accountService.withdraw(BigDecimal.valueOf(50000), 1000011003);
+            assertEquals(BigDecimal.valueOf(400000), newAccountBalance);
+
+
+        }catch (BankTransactionException | InsufficientFundException cause){
+            cause.printStackTrace();
+        }
+   }
+
+   @Test
+    void withdrawNegativeAmount(){
+
+        assertThrows(BankingException.class, ()->
+                accountService.withdraw(BigDecimal.valueOf(-5000), 1000011003));
+   }
+
+   @Test
+    void withdrawFromAnInvalidAccount(){
+
+        assertThrows(BankTransactionException.class,
+                ()-> accountService.withdraw(BigDecimal.valueOf(300000), 10000102));
+   }
+
+   @Test
+    void withdrawAmountHigherThanAccountBalance(){
+        //try {
+            Account johnSavingsAccount = accountService.findAccount(1000011003);
+            assertEquals(BigDecimal.valueOf(450000), johnSavingsAccount.getBalance());
+//        }catch (BankingException cause){
+//            cause.printStackTrace();
+//        }
+       assertThrows(InsufficientFundException.class,
+                ()-> accountService.withdraw(BigDecimal.valueOf(500000), 1000011003));
+   }
 }
