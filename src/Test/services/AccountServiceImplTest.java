@@ -261,4 +261,9 @@ class AccountServiceImplTest {
        assertThrows(InsufficientFundException.class,
                 ()-> accountService.withdraw(BigDecimal.valueOf(500000), 1000011003));
    }
+  @Test
+    void applyForLoan(){
+
+
+  }
 }

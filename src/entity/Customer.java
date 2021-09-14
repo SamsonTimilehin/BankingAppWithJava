@@ -1,5 +1,6 @@
 package entity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,11 @@ public class Customer {
     private String surname;
     private String password;
     private String phone;
+    private LocalDateTime relationshipStartDate;
     private List<Account> account = new ArrayList<>();
+
+    public Customer() {
+    }
 
     public long getBvn() {
         return bvn;
@@ -66,6 +71,14 @@ public class Customer {
 
     public void setAccount(List<Account> account) {
         this.account = account;
+    }
+
+    public LocalDateTime getRelationshipStartDate() {
+        return relationshipStartDate;
+    }
+
+    public void setRelationshipStartDate(LocalDateTime relationshipStartDate) {
+        this.relationshipStartDate = relationshipStartDate;
     }
 
     @Override
