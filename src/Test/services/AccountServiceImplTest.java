@@ -1,9 +1,7 @@
 package Test.services;
 
-import datastore.AccountType;
-import datastore.CustomerRepo;
-import entity.Account;
-import entity.Customer;
+import datastore.*;
+import entity.*;
 import exception.BankTransactionException;
 import exception.BankingException;
 import exception.InsufficientFundException;
@@ -15,6 +13,7 @@ import services.AccountServiceImpl;
 import services.BankService;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static datastore.AccountType.CURRENT_ACCOUNT;
@@ -24,11 +23,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class AccountServiceImplTest {
   private AccountService accountService;
   private Customer peter;
-    private Customer john;
+  private Customer john;
+  private  Account johnAccount;
     @BeforeEach
     void setUp() {
         accountService = new AccountServiceImpl();
         peter = new Customer();
+
         peter.setBvn(BankService.generateBvn());
         peter.setEmail("peter@gmail.com");
         peter.setFirstName("Peter");
@@ -264,6 +265,41 @@ class AccountServiceImplTest {
   @Test
     void applyForLoan(){
 
+      LoanRequest johnLoanRequest = new LoanRequest();
+      johnLoanRequest.setLoanAmount(BigDecimal.valueOf(500000));
+      johnLoanRequest.setInterestRate(0.10);
+      johnLoanRequest.setApplyDate(LocalDateTime.now());
+      johnLoanRequest.setStatus(LoanRequestStatus.NEW);
+      johnLoanRequest.setTenor(25);
+      johnLoanRequest.setTypeOfLoan(LoanType.SME);
 
+    // try{
+       Account johnCurrentAccount = accountService.findAccount(1000011003);
+        assertNull(johnCurrentAccount.getAccountLoanRequest());
+        johnCurrentAccount.setAccountLoanRequest(johnLoanRequest);
+        assertNotNull(johnCurrentAccount.getAccountLoanRequest());
+        LoanRequestStatus decision = accountService.applyForLoan(johnCurrentAccount);
+        assertNull(decision);
+//      }catch (BankingException cause){
+//          cause.printStackTrace();
+//      }
+
+
+  }
+  @Test
+    void addBankTransactionWithNullTransaction(){
+        assertThrows(BankTransactionException.class,()-> accountService.addBankTransaction(null, johnAccount));
+  }
+  @Test
+    void addBankTransactionWithNullAccount(){
+      BankTransaction transaction = new BankTransaction(BankTransactionType.DEPOSIT,BigDecimal.valueOf(30000));
+      assertThrows(BankTransactionException.class, ()->
+              accountService.addBankTransaction(transaction,null));
+  }
+  @Test
+    void addBankTransactionWithDeposit(){
+      Account peterSavingsAccount = accountService.findAccount(1000011003);
+      assertNotNull(peterSavingsAccount);
+      assertEquals(BigDecimal.valueOf(450000), peterSavingsAccount.getBalance());
   }
 }

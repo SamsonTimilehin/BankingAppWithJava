@@ -6,6 +6,7 @@ public class BankService {
     private static long currentTransactionId = 0;
 
 
+
     public static long generateAccountNumber() {
         currentAccountNumber++;
        return currentAccountNumber;
@@ -28,6 +29,10 @@ public class BankService {
 
     public static long getCurrentTransactionId() {
         currentTransactionId++;
+        return currentTransactionId;
+    }
+    public static long generateTransactionNumber(){
+        ++currentTransactionId;
         return currentTransactionId;
     }
 }

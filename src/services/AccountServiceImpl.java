@@ -3,10 +3,8 @@ package services;
 import datastore.AccountType;
 import datastore.BankTransactionType;
 import datastore.CustomerRepo;
-import entity.Account;
-import entity.Current_Account;
-import entity.Customer;
-import entity.Savings_Account;
+import datastore.LoanRequestStatus;
+import entity.*;
 import exception.BankTransactionException;
 import exception.BankingException;
 import exception.InsufficientFundException;
@@ -111,6 +109,18 @@ public class AccountServiceImpl implements AccountService{
         account.setBalance(newBalance);
 
         return newBalance;
+    }
+
+    @Override
+    public LoanRequestStatus applyForLoan(Account theAccount) {
+        return null;
+    }
+
+    @Override
+    public void addBankTransaction(BankTransaction transaction, Account theAccount) throws BankTransactionException {
+        if(transaction == null || theAccount == null){
+            throw new BankTransactionException("Transaction and account are required");
+        }
     }
 
     private void validateTransaction(BigDecimal amount, Account account) throws BankTransactionException {

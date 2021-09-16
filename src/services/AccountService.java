@@ -1,7 +1,9 @@
 package services;
 
 import datastore.AccountType;
+import datastore.LoanRequestStatus;
 import entity.Account;
+import entity.BankTransaction;
 import entity.Customer;
 import exception.BankTransactionException;
 import exception.BankingException;
@@ -22,4 +24,8 @@ public interface AccountService {
     Account findAccount(long accountNumber);
 
     BigDecimal withdraw(BigDecimal amount, long accountNumber) throws BankTransactionException, InsufficientFundException;
+
+    LoanRequestStatus applyForLoan(Account theAccount);
+
+    void addBankTransaction(BankTransaction transaction, Account theAccount) throws BankTransactionException;
 }
