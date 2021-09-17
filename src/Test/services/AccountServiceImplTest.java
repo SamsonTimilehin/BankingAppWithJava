@@ -297,9 +297,17 @@ class AccountServiceImplTest {
               accountService.addBankTransaction(transaction,null));
   }
   @Test
-    void addBankTransactionWithDeposit(){
+    void addBankTransactionWithDeposit() {
       Account peterSavingsAccount = accountService.findAccount(1000011003);
       assertNotNull(peterSavingsAccount);
       assertEquals(BigDecimal.valueOf(450000), peterSavingsAccount.getBalance());
+      try {
+          BankTransaction peterDeposit = new BankTransaction(BankTransactionType.DEPOSIT, BigDecimal.valueOf(20000));
+          accountService.addBankTransaction(peterDeposit, peterSavingsAccount);
+          assertEquals(BigDecimal.valueOf(470000), peterSavingsAccount.getBalance());
+          assertEquals(1,peterSavingsAccount.getTransactions().size());
+      }catch (BankTransactionException | InsufficientFundException cause){
+          cause.printStackTrace();
+      }
   }
 }

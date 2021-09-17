@@ -117,10 +117,17 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public void addBankTransaction(BankTransaction transaction, Account theAccount) throws BankTransactionException {
+    public void addBankTransaction(BankTransaction transaction, Account theAccount) throws BankTransactionException, InsufficientFundException {
         if(transaction == null || theAccount == null){
             throw new BankTransactionException("Transaction and account are required");
         }
+        if(transaction.getType() == BankTransactionType.DEPOSIT){
+            deposit(transaction.getAmount(), theAccount.getAccountNumber());
+        }
+        if(transaction.getType() == WITHDRAWAL){
+            withdraw(transaction.getAmount(),theAccount.getAccountNumber());
+        }
+        theAccount.getTransactions().add(transaction);
     }
 
     private void validateTransaction(BigDecimal amount, Account account) throws BankTransactionException {

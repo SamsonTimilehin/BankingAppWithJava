@@ -27,5 +27,5 @@ public interface AccountService {
 
     LoanRequestStatus applyForLoan(Account theAccount);
 
-    void addBankTransaction(BankTransaction transaction, Account theAccount) throws BankTransactionException;
+    void addBankTransaction(BankTransaction transaction, Account theAccount) throws BankTransactionException, InsufficientFundException;
 }
