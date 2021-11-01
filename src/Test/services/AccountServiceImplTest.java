@@ -310,4 +310,56 @@ class AccountServiceImplTest {
           cause.printStackTrace();
       }
   }
+  @Test
+    void addTransactionWithNegativeDeposit(){
+
+      Account peterSavingsAccount = accountService.findAccount(1000011003);
+      assertNotNull(peterSavingsAccount);
+
+      assertEquals(BigDecimal.valueOf(450000), peterSavingsAccount.getBalance());
+      assertEquals(0, peterSavingsAccount.getTransactions().size());
+
+      BankTransaction peterDeposit = new BankTransaction(BankTransactionType.DEPOSIT,BigDecimal.valueOf(-10000));
+      assertThrows(BankTransactionException.class, ()-> accountService.addBankTransaction(peterDeposit,peterSavingsAccount));
+
+      assertEquals(BigDecimal.valueOf(450000), peterSavingsAccount.getBalance());
+      assertEquals(0, peterSavingsAccount.getTransactions().size());
+  }
+  @Test
+    void addBankTransactionForWithdrawal(){
+        try {
+            Account peterSavingsAccount = accountService.findAccount(1000011003);
+            assertNotNull(peterSavingsAccount);
+
+            assertEquals(BigDecimal.valueOf(450000), peterSavingsAccount.getBalance());
+            assertEquals(0, peterSavingsAccount.getTransactions().size());
+
+            BankTransaction peterDeposit = new BankTransaction(BankTransactionType.DEPOSIT, BigDecimal.valueOf(50000));
+            accountService.addBankTransaction(peterDeposit, peterSavingsAccount);
+            assertEquals(BigDecimal.valueOf(500000),peterSavingsAccount.getBalance());
+            assertEquals(1, peterSavingsAccount.getTransactions().size());
+
+
+            BankTransaction peterWithdrawal = new BankTransaction(BankTransactionType.WITHDRAWAL, BigDecimal.valueOf(100000));
+            accountService.addBankTransaction(peterWithdrawal, peterSavingsAccount);
+            assertEquals(BigDecimal.valueOf(400000),peterSavingsAccount.getBalance());
+            assertEquals(2, peterSavingsAccount.getTransactions().size());
+
+        }catch (BankTransactionException | InsufficientFundException cause){
+            cause.printStackTrace();
+        }
+  }
+  @Test
+    void addBankTransactionWithNegativeWithdrawal(){
+      Account peterSavingsAccount = accountService.findAccount(1000011003);
+      assertNotNull(peterSavingsAccount);
+      assertEquals(BigDecimal.valueOf(450000), peterSavingsAccount.getBalance());
+      assertEquals(0, peterSavingsAccount.getTransactions().size());
+
+      BankTransaction peterWithdrawal = new BankTransaction(BankTransactionType.WITHDRAWAL, BigDecimal.valueOf(-100000));
+
+      assertThrows(BankTransactionException.class,()->accountService.addBankTransaction(peterWithdrawal, peterSavingsAccount));
+      assertEquals(BigDecimal.valueOf(450000), peterSavingsAccount.getBalance());
+      assertEquals(0, peterSavingsAccount.getTransactions().size());
+  }
 }
