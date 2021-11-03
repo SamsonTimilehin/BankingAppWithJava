@@ -203,23 +203,19 @@ class AccountServiceImplTest {
 
     @Test
     void findCurrentAccount(){
-       // try {
+
             Account johnCurrentAccount = accountService.findAccount(1000011002);
             assertNotNull(johnCurrentAccount);
             assertEquals(1000011002, johnCurrentAccount.getAccountNumber());
-//        }catch (BankingException cause){
-//            cause.printStackTrace();
-//        }
+
     }
 
     @Test
     void findAccountWithInvalidAccountNumber(){
-   // try {
+
         Account johnCurrentAccount = accountService.findAccount(20001230);
         assertNull(johnCurrentAccount);
-//    }catch(BankingException cause){
-//        cause.printStackTrace();
-//    }
+
     }
 
    @Test
@@ -253,12 +249,10 @@ class AccountServiceImplTest {
 
    @Test
     void withdrawAmountHigherThanAccountBalance(){
-        //try {
+
             Account johnSavingsAccount = accountService.findAccount(1000011003);
             assertEquals(BigDecimal.valueOf(450000), johnSavingsAccount.getBalance());
-//        }catch (BankingException cause){
-//            cause.printStackTrace();
-//        }
+
        assertThrows(InsufficientFundException.class,
                 ()-> accountService.withdraw(BigDecimal.valueOf(500000), 1000011003));
    }
@@ -273,16 +267,13 @@ class AccountServiceImplTest {
       johnLoanRequest.setTenor(25);
       johnLoanRequest.setTypeOfLoan(LoanType.SME);
 
-    // try{
+
        Account johnCurrentAccount = accountService.findAccount(1000011003);
         assertNull(johnCurrentAccount.getAccountLoanRequest());
         johnCurrentAccount.setAccountLoanRequest(johnLoanRequest);
         assertNotNull(johnCurrentAccount.getAccountLoanRequest());
         LoanRequestStatus decision = accountService.applyForLoan(johnCurrentAccount);
         assertNull(decision);
-//      }catch (BankingException cause){
-//          cause.printStackTrace();
-//      }
 
 
   }

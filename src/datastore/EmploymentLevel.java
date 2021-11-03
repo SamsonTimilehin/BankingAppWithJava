@@ -1,0 +1,5 @@
+package datastore;
+
+public enum EmploymentLevel {
+    EXECUTIVE, SENIOR_MANAGEMENT, MID_MANAGEMENT, SUPERVISOR, INDIVIDUAL_CONTRIBUTOR, ENTRY, INTERN;
+}
