@@ -92,6 +92,7 @@ public class CustomerRepo {
 
 
         johnSavingsAccount.setBalance (BigDecimal.valueOf (450000));
+        john.setRelationshipStartDate (johnSavingsAccount.getStartDate ());
         john.getAccount().add(johnSavingsAccount);
         customers.put(john.getBvn(), john);
     }

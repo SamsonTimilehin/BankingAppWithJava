@@ -62,12 +62,12 @@ public abstract class Account {
         this.startDate = startDate;
     }
 
-    @Override
-    public String toString() {
-        return "Account{" +
-                "accountNumber=" + accountNumber +
-                ", balance=" + balance +
-                ", accountPin='" + accountPin + '\'' +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Account{" +
+//                "accountNumber=" + accountNumber +
+//                ", balance=" + balance +
+//                ", accountPin='" + accountPin + '\'' +
+//                '}';
+//    }
 }

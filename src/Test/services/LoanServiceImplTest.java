@@ -93,7 +93,7 @@ class LoanServiceImplTest {
             LoanRequest processedLoanRequest = loanService.approveLoanRequest (johnCurrentAccount);
             assertEquals (LoanRequestStatus.PENDING, processedLoanRequest.getStatus ());
         } catch (BankLoanException cause) {
-            cause.printStackTrace ( );
+            cause.printStackTrace ();
         }
 
     }
