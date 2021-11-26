@@ -8,7 +8,7 @@ import java.util.Set;
 public abstract class Account {
 
     private long accountNumber;
-    private BigDecimal balance;
+    private BigDecimal balance = BigDecimal.ZERO;
     private String accountPin;
     private LoanRequest accountLoanRequest;
     private Set<BankTransaction> transactions = new HashSet<>();
@@ -62,12 +62,12 @@ public abstract class Account {
         this.startDate = startDate;
     }
 
-//    @Override
-//    public String toString() {
-//        return "Account{" +
-//                "accountNumber=" + accountNumber +
-//                ", balance=" + balance +
-//                ", accountPin='" + accountPin + '\'' +
-//                '}';
-//    }
+    @Override
+    public String toString() {
+        return "Account{" +
+                "accountNumber=" + accountNumber +
+                ", balance=" + balance +
+                ", accountPin='" + accountPin + '\'' +
+                '}';
+    }
 }
