@@ -48,9 +48,8 @@ public class CustomerRepo {
         john.setSurname("Guido");
         john.setPassword("138200");
         john.setPhone("08175124589");
-        Account johnCurrentAccount = new Current_Account(1000011002);
+        Account johnCurrentAccount = new Current_Account(1000011002, new BigDecimal(50000000));
         john.getAccount().add(johnCurrentAccount);
-       // customers.put(john.getBvn(), john);
         LocalDate dob = LocalDate.of(1991, Month.MAY, 12);
         john.setDateOfBirth(dob);
 
@@ -92,7 +91,6 @@ public class CustomerRepo {
 
 
         johnSavingsAccount.setBalance (BigDecimal.valueOf (450000));
-        //john.setRelationshipStartDate (johnSavingsAccount.getStartDate ());
         john.getAccount().add(johnSavingsAccount);
         customers.put(john.getBvn(), john);
     }

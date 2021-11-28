@@ -20,6 +20,19 @@ public class LoanServiceImpl implements LoanService{
         return theLoanRequest;
     }
 
+    @Override
+    public LoanRequest approveLoanRequest(Account accountSeekingLoan, Customer customer) throws BankLoanException {
+        this.validateLoanRequest(customer,accountSeekingLoan);
+        LoanRequestStatus decision = decideOnLoanRequestWithTotalCustomerBalance(accountSeekingLoan,customer);
+        LoanRequest theLoanRequest = accountSeekingLoan.getAccountLoanRequest();
+        theLoanRequest.setStatus(decision);
+
+        if(decision != LoanRequestStatus.APPROVED){
+            theLoanRequest = approveLoanRequest(accountSeekingLoan);
+        }
+        return theLoanRequest;
+    }
+
     public LoanRequestStatus decideOnLoanRequest(Account accountSeekingLoan) {
     LoanRequestStatus decision = decideOnLoanRequestWithAccountBalance(accountSeekingLoan);
 
@@ -39,35 +52,12 @@ public class LoanServiceImpl implements LoanService{
         return decision;
     }
 
-    private void validateLoanRequest(Account accountSeekingLoan) throws BankLoanException {
-        if(accountSeekingLoan == null){
-            throw new BankLoanException("An account is required to process loan request");
-
-        }
-        if(accountSeekingLoan.getAccountLoanRequest() == null){
-            throw new BankLoanException("No loan request provided for process");
-        }
-    }
-
-    @Override
-    public LoanRequest approveLoanRequest(Account accountSeekingLoan, Customer customer) throws BankLoanException {
-        this.validateLoanRequest(customer,accountSeekingLoan);
-        LoanRequestStatus decision = decideOnLoanRequestWithTotalCustomerBalance(accountSeekingLoan,customer);
-        LoanRequest theLoanRequest = accountSeekingLoan.getAccountLoanRequest();
-        theLoanRequest.setStatus(decision);
-
-        if(decision != LoanRequestStatus.APPROVED){
-            theLoanRequest = approveLoanRequest(accountSeekingLoan);
-        }
-        return theLoanRequest;
-    }
-
     public LoanRequestStatus decideOnLoanRequestWithTotalCustomerBalance(Account accountSeekingLoan, Customer customer) {
         LoanRequestStatus decision = LoanRequestStatus.PENDING;
         BigDecimal relationshipVolumePercentage = BigDecimal.valueOf(0.2);
 
         BigDecimal totalCustomerBalance = BigDecimal.ZERO;
-        if(customer.getAccount().size() > BigDecimal.ONE.intValue()){
+        if(customer.getAccount().size() > BigDecimal.ZERO.intValue()){
             for(Account customerAccount : customer.getAccount()){
                 totalCustomerBalance = totalCustomerBalance.add(customerAccount.getBalance());
 
@@ -79,6 +69,17 @@ public class LoanServiceImpl implements LoanService{
         }
         return decision;
     }
+
+    private void validateLoanRequest(Account accountSeekingLoan) throws BankLoanException {
+        if(accountSeekingLoan == null){
+            throw new BankLoanException("An account is required to process loan request");
+
+        }
+        if(accountSeekingLoan.getAccountLoanRequest() == null){
+            throw new BankLoanException("No loan request provided for process");
+        }
+    }
+
     private void validateLoanRequest(Customer customer, Account accountSeekingLoan) throws BankLoanException {
         if(customer == null){
             throw new BankLoanException("An account is required to process loan request");

@@ -12,7 +12,7 @@ public class Current_Account extends Account{
         this();
         setAccountNumber(accountNumber);
     }
-    public Current_Account(Long accountNumber, BigDecimal balance){
+    public Current_Account(long accountNumber, BigDecimal balance){
         this(accountNumber);
         setBalance(balance);
     }

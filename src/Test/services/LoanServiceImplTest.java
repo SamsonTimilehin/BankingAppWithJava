@@ -121,6 +121,7 @@ class LoanServiceImplTest {
             Optional<Customer> optionalCustomer = CustomerRepo.getCustomers ().values ().stream ().findFirst ();
             Customer john = optionalCustomer.isPresent () ? optionalCustomer.get ( ) : null;
             assertNotNull (john);
+            System.out.println(john.getAccount().size());
             john.setRelationshipStartDate (johnSavingsAccount.getStartDate ().minusYears (2));
             assertEquals (BigDecimal.valueOf (450000), johnSavingsAccount.getBalance ());
             johnLoanRequest.setLoanAmount (BigDecimal.valueOf (3000000));
