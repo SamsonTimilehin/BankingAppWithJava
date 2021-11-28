@@ -32,7 +32,7 @@ class LoanEngineByBalanceTest {
     private Customer john;
 
     @BeforeEach
-    void setUp() throws BankingException {
+    void setUp(){
         accountService = new AccountServiceImpl();
         loanEngine = new LoanEngineByBalance();
 
@@ -68,7 +68,7 @@ class LoanEngineByBalanceTest {
     @Test
     void calculateAmountAutoApproved(){
         try{
-            Account johnCurrentAccount = accountService.findAccount (1000110002);
+            Account johnCurrentAccount = accountService.findAccount (1000011003);
             johnLoanRequest.setLoanAmount (BigDecimal.valueOf (9000000));
             johnCurrentAccount.setAccountLoanRequest (johnLoanRequest);
             BigDecimal amountApproved = loanEngine.calculateAmountAutoApproved (john, johnCurrentAccount);
@@ -81,7 +81,7 @@ class LoanEngineByBalanceTest {
     @Test
     void calculateAmountAutoApprovedForCustomerWithNegativeBalance(){
         try{
-            Account johnCurrentAccount = accountService.findAccount (1000110002);
+            Account johnCurrentAccount = accountService.findAccount (1000011003);
             johnCurrentAccount.setBalance (BigDecimal.valueOf (-900000));
 
             johnCurrentAccount.setAccountLoanRequest (johnLoanRequest);
